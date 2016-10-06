@@ -1,6 +1,7 @@
 __author__ = "Ming Jia"
 from collections import Counter
 import unittest
+import math
 
 class TreeNode(object):
     def __init__(self, isLeaf=False):
@@ -44,6 +45,18 @@ class DecisionTree(object):
         label = max(labels.iteritems(), key=lambda x:x[1])[0]
         return label
 
+    def entropy(self, records):
+        """
+        This function calculates the entropy of given set of records
+        """
+        labels = Counter([record["label"] for record in records])
+        entropy = 0.0
+        for label in labels.iteritems():
+            prob = float(label[1]) / float(len(records))
+            if prob > 0:
+                entropy = entropy - prob * math.log(prob, 2)
+        return entropy
+
     def find_best_split(self, records, attributes):
         """
         The find_best_split() function determines which attribute should be
@@ -61,6 +74,7 @@ class DecisionTree(object):
         #Hint-1: loop through all available attributes
         #Hint-2: for each attribute, loop through all possible values
         #Hint-3: calculate information gain and pick the best attribute
+
 
         return best_threshold, best_left, best_right, best_attribute
 
@@ -103,6 +117,11 @@ class TestDecisionTree(unittest.TestCase):
     def test_classify(self):
         records = [{"label":"A"}, {"label":"B"}, {"label":"B"}]
         self.assertEqual(self.dt.classify(records), "B")
+    def test_entropy(self):
+        records = [ {"label":"0"}, {"label":"0"}, {"label":"0"}, {"label":"0"},
+                    {"label":"0"}, {"label":"1"}]
+        # expected entropy : ~0.65
+        self.assertTrue(math.fabs(self.dt.entropy(records) - 0.65) < 0.001)
 
 if __name__ == "__main__":
     unittest.main()
