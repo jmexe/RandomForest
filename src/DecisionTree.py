@@ -1,4 +1,6 @@
 __author__ = "Ming Jia"
+from collections import Counter
+import unittest
 
 class TreeNode(object):
     def __init__(self, isLeaf=False):
@@ -94,3 +96,13 @@ class DecisionTree(object):
         This function predict the label for new sample
         """
         return self.root.predict()
+
+class TestDecisionTree(unittest.TestCase):
+    def setUp(self):
+        self.dt = DecisionTree()
+    def test_classify(self):
+        records = [{"label":"A"}, {"label":"B"}, {"label":"B"}]
+        self.assertEqual(self.dt.classify(records), "B")
+
+if __name__ == "__main__":
+    unittest.main()
