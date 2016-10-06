@@ -37,8 +37,9 @@ class DecisionTree(object):
         class i associated with the node t. In most cases, the leaf node is
         assigned to the class that has the majority number of training records
         """
-
-        # Your code here
+        # Count the labels and return the majority label
+        labels = Counter([record["label"] for record in records])
+        label = max(labels.iteritems(), key=lambda x:x[1])[0]
         return label
 
     def find_best_split(self, records, attributes):
