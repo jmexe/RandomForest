@@ -1,8 +1,8 @@
 __author__ = "Ming Jia"
 
 class TreeNode(object):
-    def __init__(self):
-        self.isLeaf = False
+    def __init__(self, isLeaf=False):
+        self.isLeaf = isLeaf
         self.left = None
         self.right = None
         self.threshold = 0
@@ -67,6 +67,25 @@ class DecisionTree(object):
     def tree_growth(self, records, attributes):
         """
         """
+
+        if self.stopping_cond(records, attributes):
+            leaf = TreeNode(True)
+            leaf.label = self.classify(records)
+            return leaf
+        else:
+            root = TreeNode()
+            # Split the records into two parts
+            best_threshold, best_left, best_right, best_attribute = \
+                self.find_best_split(records, attributes)
+
+            if best_left is None or best_right is None:
+                root.label = self.classify(records)
+                return root
+
+            root.threshold, root.attribute, root.left, root.right = \
+                best_threshold, best_attribute, \
+                self.tree_growth(best_left, attributes), \
+                self.tree_growth(best_right, attributes)
         return root
 
     def predict(self, sample):
