@@ -8,7 +8,7 @@ class TreeNode(object):
         self.isLeaf = isLeaf
         self.left = None
         self.right = None
-        self.threshold = 0
+        self.threshold = ""
         self.attribute = 0
         self.label = ""
 
@@ -68,7 +68,7 @@ class DecisionTree(object):
 
         test_condition = {}
         best_info_gain = 0
-        best_threshold = 0
+        best_threshold = ""
         best_left = None
         best_right = None
         best_attribute = 0
@@ -121,6 +121,7 @@ class DecisionTree(object):
 
             if best_left is None or best_right is None:
                 root.label = self.classify(records)
+                root.isLeaf = True
                 return root
 
             root.threshold, root.attribute, root.left, root.right = \
@@ -133,7 +134,16 @@ class DecisionTree(object):
         """
         This function predict the label for new sample
         """
-        return self.root.predict()
+        return self.root.predict(sample)
+
+    def print_tree(self, node, indent=""):
+        if node == None:
+            pass
+        else:
+            print indent + "(" + node.threshold + "," + str(node.attribute) + "," + node.label + ")"
+            self.print_tree(node=node.left, indent="-" + indent)
+            self.print_tree(node=node.right, indent="-" + indent)
+
 
 class TestDecisionTree(unittest.TestCase):
     def setUp(self):
