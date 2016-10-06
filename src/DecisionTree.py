@@ -31,6 +31,9 @@ class DecisionTree(object):
         label or the same attribute values.
         """
         # Your code here
+        if len(set(record["label"] for record in records)) < 2:
+            return True
+
         return False
 
     def classify(self, records):
@@ -74,7 +77,28 @@ class DecisionTree(object):
         #Hint-1: loop through all available attributes
         #Hint-2: for each attribute, loop through all possible values
         #Hint-3: calculate information gain and pick the best attribute
+        entropy = self.entropy(records)
+        for attribute in attributes:
+            # Split the records into two parts based on the value of the selct
+            # attribute
+            values = set([record["attributes"][attribute] for record in records])
 
+            for threshold in values:
+                for threshold in values:
+                    left = []
+                    right = []
+                    # split the records based on the threshold selected
+                    for record in records:
+                        if record["attributes"][attribute] == threshold:
+                            left.append(record)
+                        else:
+                            right.append(record)
+                    # calculate the information gain based on the new split
+                    info_gain = entropy - float(len(left) * self.entropy(left) + len(right) * self.entropy(right)) / len(records)
+                    # if the information gain is better the best split we have tested
+                    # set this split as the best split
+                    if info_gain > best_info_gain:
+                        best_info_gain, best_threshold, best_left, best_right, best_attribute = info_gain, threshold, left, right, attribute
 
         return best_threshold, best_left, best_right, best_attribute
 
@@ -122,6 +146,32 @@ class TestDecisionTree(unittest.TestCase):
                     {"label":"0"}, {"label":"1"}]
         # expected entropy : ~0.65
         self.assertTrue(math.fabs(self.dt.entropy(records) - 0.65) < 0.001)
+    def test_split(self):
+        """
+        sample is from textbook p153
+        feature list :
+            Home Owner: 0=No, 1=Yes
+            Marital Status: 0=Single, 1=Married, 2=Divorced
+            Annual Income: unit=K
+        """
+        records = [ {"label":"No",  "attributes":[1, 0, 125]},
+                    {"label":"No",  "attributes":[0, 1, 100]},
+                    {"label":"No",  "attributes":[0, 0, 70]},
+                    {"label":"No",  "attributes":[1, 1, 120]},
+                    {"label":"Yes", "attributes":[0, 2, 95]},
+                    {"label":"No",  "attributes":[0, 1, 60]},
+                    {"label":"No",  "attributes":[1, 2, 220]},
+                    {"label":"Yes", "attributes":[0, 0, 85]},
+                    {"label":"No",  "attributes":[0, 1, 75]},
+                    {"label":"Yes", "attributes":[0, 0, 90]}]
+        threshhold, left, right, attribute = self.dt.find_best_split(records, [0, 1, 2])
+        self.assertEqual(attribute, 1)
+    def test_stopping_cond(self):
+        records = [{"label":"A"}]
+        self.assertTrue(self.dt.stopping_cond(records, [0, 1, 2]))
+        self.assertTrue(self.dt.stopping_cond([], [0, 1, 2]))
+        records = records + [{"label":"B"}, {"label":"B"}]
+        self.assertFalse(self.dt.stopping_cond(records, [0, 1, 2]))
 
 if __name__ == "__main__":
     unittest.main()
