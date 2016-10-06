@@ -2,6 +2,7 @@ __author__ = "Ming Jia"
 from collections import Counter
 import unittest
 import math
+import random
 
 class TreeNode(object):
     def __init__(self, isLeaf=False):
@@ -65,7 +66,6 @@ class DecisionTree(object):
         The find_best_split() function determines which attribute should be
         selected as the test condition for splitting the trainig records.
         """
-
         test_condition = {}
         best_info_gain = 0
         best_threshold = ""

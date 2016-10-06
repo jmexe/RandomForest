@@ -1,4 +1,5 @@
 from DecisionTree import DecisionTree
+from RandomForest import RandomForest
 
 def load_data(file_path):
     records = []
@@ -10,17 +11,15 @@ def load_data(file_path):
     file.close()
     return records, attributes
 
-def test_decision_tree():
+def test_model(model):
     records, attributes = load_data("data/mushrooms_train.data")
-    dt = DecisionTree()
-    dt.train(records, attributes)
-    dt.print_tree(dt.root)
+    model.train(records, attributes)
     test_records = load_data("data/mushrooms_test.data")[0]
     correct_cnt = 0
     for sample in test_records:
-        if dt.predict(sample) == sample["label"]:
+        if model.predict(sample) == sample["label"]:
             correct_cnt += 1
     print float(correct_cnt) / len(test_records)
 
 if __name__ == "__main__":
-    test_decision_tree()
+    test_model(DecisionTree())

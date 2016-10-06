@@ -1,4 +1,5 @@
 import random
+from DecisionTree import DecisionTree
 
 class RandomForest(object):
     def __init__(self):
@@ -25,7 +26,9 @@ class RandomForest(object):
         # Your code here
         for i in range(tree_num):
             tree = DecisionTree()
-            tree.train(self.bootstrap(records), attributes)
+            bag = self.bootstrap(records)
+            sub_attributes = random.sample(attributes, int(math.ceil(math.sqrt(len(attributes)))))
+            tree.train(bag, sub_attributes)
             self.forest.append(tree)
 
     def predict(self, sample):
