@@ -9,8 +9,8 @@ class RandomForest(object):
         This function bootstrap will return a set of records, which has the same
         size with the original records but with replacement.
         """
-        bag = []
         # You code here
+        bag = [random.choice(records) for i in range(len(records))]
         return bag
 
     def train(self, tree_num, records, attributes):
@@ -23,6 +23,17 @@ class RandomForest(object):
             choose the best split from among those variables
         """
         # Your code here
-        pass
+        for i in range(tree_num):
+            tree = DecisionTree()
+            tree.train(self.bootstrap(records), attributes)
+            self.forest.append(tree)
 
     def predict(self, sample):
+        """
+        The predict function predicts the label for new data by aggregating the
+        predictions of each tree
+        """
+        votes = [tree.predict(sample) for tree in self.forest]
+        label = max(Counter(votes).iteritems, key = lambda x:x[1])[0]
+
+        return label
