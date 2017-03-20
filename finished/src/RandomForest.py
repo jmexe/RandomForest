@@ -1,8 +1,11 @@
 import random
+import math
+from collections import Counter
 from DecisionTree import DecisionTree
 
 class RandomForest(object):
-    def __init__(self):
+    def __init__(self, tree_num):
+        self.tree_num = tree_num
         self.forest = []
 
     def bootstrap(self, records):
@@ -14,7 +17,7 @@ class RandomForest(object):
         bag = [random.choice(records) for i in range(len(records))]
         return bag
 
-    def train(self, tree_num, records, attributes):
+    def train(self, records, attributes):
         """
         This function will train the random forest, the basic idea of training a
         Random Forest is as follows:
@@ -24,7 +27,7 @@ class RandomForest(object):
             choose the best split from among those variables
         """
         # Your code here
-        for i in range(tree_num):
+        for i in range(self.tree_num):
             tree = DecisionTree()
             bag = self.bootstrap(records)
             sub_attributes = random.sample(attributes, int(math.ceil(math.sqrt(len(attributes)))))
@@ -37,6 +40,6 @@ class RandomForest(object):
         predictions of each tree
         """
         votes = [tree.predict(sample) for tree in self.forest]
-        label = max(Counter(votes).iteritems, key = lambda x:x[1])[0]
+        label = max(Counter(votes).iteritems(), key = lambda x:x[1])[0]
 
         return label

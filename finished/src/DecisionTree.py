@@ -34,7 +34,6 @@ class DecisionTree(object):
         # Your code here
         if len(set(record["label"] for record in records)) < 2:
             return True
-
         return False
 
     def classify(self, records):
@@ -119,7 +118,7 @@ class DecisionTree(object):
             best_threshold, best_left, best_right, best_attribute = \
                 self.find_best_split(records, attributes)
 
-            if best_left is None or best_right is None:
+            if best_left is None or len(best_left) == 0 or best_right is None or len(best_right) == 0:
                 root.label = self.classify(records)
                 root.isLeaf = True
                 return root
@@ -147,7 +146,7 @@ class DecisionTree(object):
 
 class TestDecisionTree(unittest.TestCase):
     def setUp(self):
-        self.dt = DecisionTree()
+        self.dt = DecisionTree(20)
     def test_classify(self):
         records = [{"label":"A"}, {"label":"B"}, {"label":"B"}]
         self.assertEqual(self.dt.classify(records), "B")
